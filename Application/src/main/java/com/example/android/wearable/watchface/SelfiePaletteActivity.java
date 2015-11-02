@@ -25,6 +25,7 @@ import com.google.android.gms.wearable.DataMapItem;
 
 
 import android.support.v7.graphics.Palette;
+import android.widget.Toast;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -102,7 +103,7 @@ public class SelfiePaletteActivity extends WatchFaceCompanionConfigActivityBase 
 
     @Override // ResultCallback<DataApi.DataItemResult>
     public void onResult(DataApi.DataItemResult dataItemResult) {
-
+        // TODO: sync with current colors of watch?
     }
 
 
@@ -117,6 +118,8 @@ public class SelfiePaletteActivity extends WatchFaceCompanionConfigActivityBase 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+            Toast.makeText(this, "Take a selfie of your outfit", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -160,7 +163,7 @@ public class SelfiePaletteActivity extends WatchFaceCompanionConfigActivityBase 
 
 
     private void choosePalette(WatchFacePalette palette) {
-        Log.d(TAG, "sending palette to watch " + palette.getText());
+        Toast.makeText(this, "Matching your watch to your outfit", Toast.LENGTH_SHORT).show();
         
         final int textColor = palette.getText();
         sendConfigUpdateMessage(KEY_BACKGROUND_COLOR, palette.getBackground());
