@@ -71,10 +71,12 @@ public class DigitalWatchFaceCompanionConfigActivity extends Activity
                 .addApi(Wearable.API)
                 .build();
 
+        TextView label = (TextView)findViewById(R.id.label);
         ComponentName name = getIntent().getParcelableExtra(
                 WatchFaceCompanion.EXTRA_WATCH_FACE_COMPONENT);
-        TextView label = (TextView)findViewById(R.id.label);
-        label.setText(label.getText() + " (" + name.getClassName() + ")");
+        if (name != null) {
+            label.setText(label.getText() + " (" + name.getClassName() + ")");
+        }
     }
 
     @Override
