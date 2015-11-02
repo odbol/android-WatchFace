@@ -25,6 +25,10 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
 
+
+    <uses-feature android:name="android.hardware.camera"
+                  android:required="true" />
+
     <!-- All intent-filters for config actions must include the categories
         com.google.android.wearable.watchface.category.COMPANION_CONFIGURATION and
         android.intent.category.DEFAULT. -->
@@ -52,6 +56,19 @@
                 <action android:name="com.example.android.wearable.watchface.CONFIG_DIGITAL" />
                 <category android:name="com.google.android.wearable.watchface.category.COMPANION_CONFIGURATION" />
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SelfiePaletteActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
+
+                <action android:name="com.example.android.wearable.watchface.CONFIG_SELFIE" />
+                <category android:name="com.google.android.wearable.watchface.category.COMPANION_CONFIGURATION" />
             </intent-filter>
         </activity>
 

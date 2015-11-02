@@ -17,5 +17,9 @@
 
 <resources>
 
+    <!-- tappur palette -->
+    <color name="tappur_primary">#FF31AFEC</color>
+    <color name="tappur_primary_dark">#FF278CBC</color>
+    <color name="tappur_accent">#FF21d3b4</color>
 
 </resources>
