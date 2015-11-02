@@ -38,6 +38,9 @@ public class SelfiePaletteActivity extends WatchFaceCompanionConfigActivityBase 
     static final int REQUEST_IMAGE_CAPTURE = 11;
     private static final String TAG = "SelfiePaletteActivity";
 
+    /**
+     * Holds the WatchFacePalette objects so the user can choose a palette
+     */
     static class PaletteAdapter extends ArrayAdapter<WatchFacePalette> {
 
         public PaletteAdapter(Context context, int resource) {
@@ -99,23 +102,8 @@ public class SelfiePaletteActivity extends WatchFaceCompanionConfigActivityBase 
 
     @Override // ResultCallback<DataApi.DataItemResult>
     public void onResult(DataApi.DataItemResult dataItemResult) {
-        if (dataItemResult.getStatus().isSuccess() && dataItemResult.getDataItem() != null) {
-            DataItem configDataItem = dataItemResult.getDataItem();
-            DataMapItem dataMapItem = DataMapItem.fromDataItem(configDataItem);
-            DataMap config = dataMapItem.getDataMap();
-            setUpAllPickers(config);
-        } else {
-            // If DataItem with the current config can't be retrieved, select the default items on
-            // each picker.
-            setUpAllPickers(null);
-        }
-    }
-
-    private void setUpAllPickers(DataMap config) {
 
     }
-
-
 
 
     private void clickAddButton() {
@@ -141,17 +129,17 @@ public class SelfiePaletteActivity extends WatchFaceCompanionConfigActivityBase 
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             imageView.setImageBitmap(imageBitmap);
 
-            getPaletteFromBitmap(imageBitmap);
+            addPalettesFromBitmap(imageBitmap);
         }
     }
 
-    private void getPaletteFromBitmap(Bitmap bitmap) {
+    private void addPalettesFromBitmap(Bitmap bitmap) {
 
         Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
             public void onGenerated(Palette p) {
 
                 Observable.from(p.getSwatches())
-                        .limit(10)
+                        .limit(8)
                         .map(new Func1<Palette.Swatch, WatchFacePalette>() {
                             @Override
                             public WatchFacePalette call(Palette.Swatch swatch) {

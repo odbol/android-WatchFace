@@ -9,13 +9,18 @@ import android.os.Bundle;
 import android.support.wearable.companion.WatchFaceCompanion;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.Node;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+
+import java.util.List;
 
 /**
  * Created by tyler on 11/2/15.
@@ -65,12 +70,40 @@ public class WatchFaceCompanionConfigActivityBase extends Activity implements Go
         }
 
         if (mPeerId != null) {
-            Uri.Builder builder = new Uri.Builder();
-            Uri uri = builder.scheme("wear").path(PATH_WITH_FEATURE).authority(mPeerId).build();
-            Wearable.DataApi.getDataItem(mGoogleApiClient, uri).setResultCallback(this);
+            onConnectedToPeer(mPeerId);
         } else {
-            displayNoConnectedDeviceDialog();
+            // in case they just launched the app, instead of going through the Wear app first to configure,
+            // look for an available watch.
+            Wearable.NodeApi
+                    .getConnectedNodes(mGoogleApiClient)
+                    .setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                @Override
+                public void onResult(NodeApi.GetConnectedNodesResult result) {
+
+                    if (result.getStatus().isSuccess()) {
+
+                        final List<Node> nodes = result.getNodes();
+                        if (nodes.size() > 0) {
+                            mPeerId = nodes.get(0).getId();
+
+                            onConnectedToPeer(mPeerId);
+
+                            return;
+                        }
+                    }
+
+                    // fail
+                    displayNoConnectedDeviceDialog();
+                }
+            });
         }
+    }
+
+    private void onConnectedToPeer(String peerId) {
+
+        Uri.Builder builder = new Uri.Builder();
+        Uri uri = builder.scheme("wear").path(PATH_WITH_FEATURE).authority(peerId).build();
+        Wearable.DataApi.getDataItem(mGoogleApiClient, uri).setResultCallback(this);
     }
 
     @Override // GoogleApiClient.ConnectionCallbacks
@@ -111,6 +144,9 @@ public class WatchFaceCompanionConfigActivityBase extends Activity implements Go
                 Log.d(TAG, "Sent watch face config message: " + configKey + " -> "
                         + Integer.toHexString(color));
             }
+        }
+        else {
+            Toast.makeText(this, "No watch connected", Toast.LENGTH_SHORT).show();
         }
     }
 
